@@ -5,15 +5,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-// Oluşturduğumuz modeli Entity olarak işaretliyoruz.
+// OluÅŸturduÄŸumuz modeli Entity olarak iÅŸaretliyoruz.
 
 @Entity
 public class Student {
 
-	// Sınıfımıza Entity özelliği kazandırabilmek için Primary key bilgisi vermek zorundayız.
-	// Bunu @Id annotationı ile yapıyoruz.
-	// @GeneratedValue kısımında GenerationType.AUTO yaptığımız için eklenen her kayıtın otomatik olarak id değerini arttırımını sağlar.
-	// Auto Increment gibi düşünülebilir bu mantık.
+	// SÄ±nÄ±fÄ±mÄ±za Entity Ã¶zelliÄŸi kazandÄ±rabilmek iÃ§in Primary key bilgisi vermek zorundayÄ±z.
+	// Bunu @Id annotationÄ± ile yapÄ±yoruz.
+	// @GeneratedValue kÄ±sÄ±mÄ±nda GenerationType.AUTO yaptÄ±ÄŸÄ±mÄ±z iÃ§in eklenen her kayÄ±tÄ±n otomatik olarak id deÄŸerini arttÄ±rÄ±mÄ±nÄ± saÄŸlar.
+	// Auto Increment gibi dÃ¼ÅŸÃ¼nÃ¼lebilir bu mantÄ±k.
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,7 +23,7 @@ public class Student {
 	private String bolum;
 	private double ortalama;
 
-	// Sınıfımızın Entity özelliği kazanabilmesi için public no-arg constructor 'a sahip olması gerekmekte!
+	// SÄ±nÄ±fÄ±mÄ±zÄ±n Entity Ã¶zelliÄŸi kazanabilmesi iÃ§in public no-arg constructor 'a sahip olmasÄ± gerekmekte!
 	public Student() {
 		super();
 	}

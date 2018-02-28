@@ -1,72 +1,72 @@
-package test;
+package dao;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.EntityTransaction;
 
-import dao.StudentDAO;
-import dao.StudentDAOImp;
 import model.Student;
 
-public class Test {
+public class StudentDAOImp implements StudentDAO {
 
-	public static void main(String[] args) {
+	private EntityManager entityManager;
+		
+	// DÄ±ÅŸarÄ±dan entityManager nesnesini alÄ±yoruz.
+	
+	public StudentDAOImp(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
-		/**
-		 * Persistence-unit bilgilerine yani veritabanı bilgilerimize ulaşmak için
-		 * öncelikle EntityManagerFactoy oluşturuyoruz. persistence.xml dosyamızda
-		 * <persistence-unit name="JPAtest"> olan kısımdaki ismi buraya veriyor,
-		 * sonrasonda bu fabrikadan da bir EntityManager oluşturuyoruz.
-		 */
+	
+	/**
+	 * VeritabanÄ±na kaydetme, silme ve gÃ¼ncelleme iÅŸlemlerinde transaction kullanÄ±lmalÄ±. 
+	 * KullanÄ±lmaz ise yaptÄ±ÄŸÄ±mÄ±z iÅŸler veritabanÄ±na yansÄ±mayacak.
+	 * YapÄ±lan iÅŸ(ekleme, silme, gÃ¼ncelleme vs.) begin ve commit metodlarÄ± arasÄ±nda olmalÄ±.
+	 */
+	
+	@Override
+	public void insertStudent(Student student) {
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		// Persist metodu bize JPA'nÄ±n saÄŸladÄ±ÄŸÄ± Sql sorgusu yazmadan veritabanÄ±na ekleme imkanÄ± sunmakta.
+		entityManager.persist(student);
+		transaction.commit();
+	}
 
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPAtest");
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
+	@Override
+	public void deleteStudent(int id) {
+		// Silmek iÃ§in ilk Ã¶nce verilen id'ye gÃ¶re Ã¶ÄŸrenci bulunmasÄ± gerekmekte.
+		Student student = getStudentId(id);
+		EntityTransaction transaction = entityManager.getTransaction();
+		// Daha sonra Remove metodu ile veritabanÄ±mÄ±zdan kayÄ±tÄ± silme iÅŸlemini gerÃ§ekleÅŸtiriyoruz.
+		transaction.begin();
+		entityManager.remove(student);
+		transaction.commit();
+	}
 
-		// Sonrasında oluşturduğumuz entityManager'ı metodları çalıştıracak olan sınıfa
-		// veriyoruz.
+	@Override
+	public void updateAverage(int id, double ortalama) {
+		Student student = getStudentId(id);
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		student.setOrtalama(ortalama);
+		transaction.commit();
 
-		StudentDAO studentDAO = new StudentDAOImp(entityManager);
+	}
 
-		Student student1 = new Student("Yusuf", "Genç", "Bilgisayar", 2.5);
-		Student student2 = new Student("Ömer", "Genç", "Yazılım", 2.8);
-		Student student3 = new Student("Faruk", "Genç", "Kamu", 3.0);
+	@Override
+	public Student getStudentId(int id) {
+		// Find metodu verilen id bilgisine gÃ¶re veritabanÄ±nda arama yapmamÄ±za olanak saÄŸlamakta.
+		// bu metodda transaction aÃ§madÄ±k Ã§Ã¼nkÃ¼ sadece okuma iÅŸlemi yaptÄ±k.
+		Student student = entityManager.find(Student.class, id);
+		return student;
+	}
 
-		System.out.println(" --- Öğrenciler Eklendi ---");
-		System.out.println();
-
-		studentDAO.insertStudent(student1);
-		studentDAO.insertStudent(student2);
-		studentDAO.insertStudent(student3);
-
-		List<Student> studentList = studentDAO.allStudent();
-		for (Student student : studentList) {
-			System.out.println(student);
-		}
-		System.out.println();
-		System.out.println(" --- 1 numaralı öğrenci silindi. ---");
-		System.out.println();
-
-		studentDAO.deleteStudent(1);
-
-		List<Student> studentList2 = studentDAO.allStudent();
-		for (Student student : studentList2) {
-			System.out.println(student);
-		}
-		System.out.println();
-		System.out.println(" --- 2 numaralı öğrencinin ortalaması 3.5 olarak güncellendi. ---");
-		System.out.println();
-
-		studentDAO.updateAverage(2, 3.5);
-
-		List<Student> studentList3 = studentDAO.allStudent();
-		for (Student student : studentList3) {
-			System.out.println(student);
-		}
-
-		System.out.println("");
-
+	@Override
+	public List<Student> allStudent() {
+		// En basit ÅŸekilde bir sorgu oluÅŸturup veritabanÄ±mÄ±zdaki tÃ¼m Ã–ÄŸrencileri getirip,
+		// getResultList metodu ile bize sonucu liste ÅŸeklinde dÃ¶ndÃ¼rmesini saÄŸlÄ±yoruz.
+		return entityManager.createQuery("select e from Student e", Student.class).getResultList();
 	}
 
 }

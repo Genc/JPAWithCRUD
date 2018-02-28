@@ -6,19 +6,19 @@ import model.Student;
 
 public interface StudentDAO {
 
-	// Veritabanımıza kayıt yapmak için kullandığımız metod
+	// VeritabanÄ±mÄ±za kayÄ±t yapmak iÃ§in kullandÄ±ÄŸÄ±mÄ±z metod
 	public void insertStudent(Student student);
 
-	// Veritabanımızdan kayıt silmek için kullandığımız metod
+	// VeritabanÄ±mÄ±zdan kayÄ±t silmek iÃ§in kullandÄ±ÄŸÄ±mÄ±z metod
 	public void deleteStudent(int id);
 
-	// Öğrencinin ortalamasını güncellememizi sağlayan metod
+	// Ã–Ã°rencinin ortalamasÄ±nÄ± gÃ¼ncellememizi saÄŸlayan metod
 	public void updateAverage(int id, double average);
 	
-	// Öğrencinin id bilgisini dönderen metod
+	// Ã–Ã°rencinin id bilgisini dÃ¶nderen metod
 	public Student getStudentId(int id);
 	
-	// // Veritabanımızda bulunan tüm öğrencileri listelemek için kullandığımız metod
+	// // VeritabanÄ±mÄ±zda bulunan tÃ¼m Ã¶ÄŸrencileri listelemek iÃ§in kullandÄ±ÄŸÄ±mÄ±z metod
 	public List<Student> allStudent();
 
 }
